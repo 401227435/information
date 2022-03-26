@@ -5,14 +5,8 @@
 @File    : manage.py
  '''
 
-from flask import Flask, session
-from flask_sqlalchemy import SQLAlchemy
-from flask_wtf.csrf import CSRFProtect
-from flask_session import Session
-from redis import StrictRedis
 from flask_script import Manager, Server
 from flask_migrate import Migrate, MigrateCommand
-from config import Config
 from info import create_app, db
 
 """
@@ -27,6 +21,7 @@ from info import create_app, db
 9、拆分Config
 10、加载内容
 11、把路由变成蓝图
+12、添加日志
 """
 
 app = create_app("dev")
@@ -35,10 +30,6 @@ manager = Manager(app)
 manager.add_command('runserver', Server(host='0.0.0.0', port=8080))
 Migrate(app, db)
 manager.add_command('db', MigrateCommand)
-
-
-
-
 
 if __name__ == '__main__':
     manager.run()
