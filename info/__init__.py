@@ -11,7 +11,7 @@ from flask_wtf import CSRFProtect
 from redis import StrictRedis
 
 from information.config import config
-
+from information.info.module import index_blu
 
 db = None
 
@@ -23,6 +23,9 @@ def create_app(config_name):
     redis_store = StrictRedis(host=config[config_name].REDIS_HOST, port=config[config_name].REDIS_PORT)
     CSRFProtect(app)
     Session(app)
+
+    # 添加蓝图后的路由
+    app.register_blueprint(index_blu)
 
     return app
 

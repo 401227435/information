@@ -37,13 +37,7 @@ Migrate(app, db)
 manager.add_command('db', MigrateCommand)
 
 
-@app.route("/")
-def index():
-    # 存取session
-    session["name"] = 'test_session'
-    # 获取session  登录redis可以keys * 可以看到session的key
-    print(session["name"])
-    return "test"
+
 
 
 if __name__ == '__main__':
