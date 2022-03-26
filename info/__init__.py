@@ -12,13 +12,20 @@ from redis import StrictRedis
 
 from information.config import config
 
-app = Flask(__name__)
 
-app.config.from_object(config['dev'])
-db = SQLAlchemy(app)
-redis_store = StrictRedis(host=config['dev'].REDIS_HOST, port=config['dev'].REDIS_PORT)
-CSRFProtect(app)
-Session(app)
+db = None
+
+def create_app(config_name):
+    app = Flask(__name__)
+
+    app.config.from_object(config[config_name])
+    db = SQLAlchemy(app)
+    redis_store = StrictRedis(host=config[config_name].REDIS_HOST, port=config[config_name].REDIS_PORT)
+    CSRFProtect(app)
+    Session(app)
+
+    return app
+
 
 if __name__ == '__main__':
     pass
