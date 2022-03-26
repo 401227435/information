@@ -13,6 +13,7 @@ from redis import StrictRedis
 from flask_script import Manager, Server
 from flask_migrate import Migrate, MigrateCommand
 from config import Config
+from info import app,db
 
 """
 1、初始化
@@ -28,13 +29,7 @@ from config import Config
 11、把路由变成蓝图
 """
 
-app = Flask(__name__)
 
-app.config.from_object(Config)
-db = SQLAlchemy(app)
-redis_store = StrictRedis(host=Config.REDIS_HOST, port=Config.REDIS_PORT)
-CSRFProtect(app)
-Session(app)
 manager = Manager(app)
 manager.add_command('runserver', Server(host='0.0.0.0', port=8080))
 Migrate(app, db)

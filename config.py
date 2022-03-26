@@ -8,7 +8,7 @@ from redis import StrictRedis
 
 
 class Config(object):
-    DEBUG = True
+    DEBUG = False
     # mysql 配置信息
     SQLALCHEMY_DATABASE_URI = "mysql://root:123456@192.168.3.23:3306/information"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -26,6 +26,22 @@ class Config(object):
     SESSION_REDIS = StrictRedis(host=REDIS_HOST, port=REDIS_PORT)  # 使用 redis 的实例
     PERMANENT_SESSION_LIFETIME = 86400  # session 的有效期，单位是秒
 
+
+# dev
+class Developement(Config):
+    DEBUG = True
+
+
+# prod
+class Production(Config):
+    DEBUG = False
+
+
+config = {
+    "dev": Developement,
+    "Production": Production,
+    "uat": None
+}
 
 if __name__ == '__main__':
     pass
