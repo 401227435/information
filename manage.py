@@ -10,8 +10,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from flask_session import Session
 from redis import StrictRedis
-# from flask_script import Manager
-# from flask_migrate import Migrate, MigrateCommand
+from flask_script import Manager
+from flask_migrate import Migrate,MigrateCommand
 """
 1、初始化
 2、抽取配置文件在config类
@@ -19,6 +19,8 @@ from redis import StrictRedis
 4、redis
 5、添加csrf
 6、添加session存储在redis中
+7、添加命令行管理manage
+8、数据库迁移
 """
 
 app = Flask(__name__)
@@ -51,6 +53,10 @@ db = SQLAlchemy(app)
 redis_store = StrictRedis(host=Config.REDIS_HOST, port=Config.REDIS_PORT)
 CSRFProtect(app)
 Session(app)
+manager=Manager(app)
+Migrate(app, db)
+manager.add_command('db', MigrateCommand)
+
 
 
 @app.route("/")
@@ -63,4 +69,4 @@ def index():
 
 
 if __name__ == '__main__':
-    app.run(host="192.168.3.109")
+    manager.run()
