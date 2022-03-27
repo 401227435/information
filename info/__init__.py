@@ -10,12 +10,13 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
 from redis import StrictRedis
 
-from information.config import config
-from information.info.module import index_blu
+from config import config
+from info.module import index_blu
 import logging
 from logging.handlers import RotatingFileHandler
 
-db = None
+# 初始化sqlalchemy
+db = SQLAlchemy()
 
 
 def create_log():
@@ -36,7 +37,8 @@ def create_app(config_name):
     app = Flask(__name__)
 
     app.config.from_object(config[config_name])
-    db = SQLAlchemy(app)
+
+    db.init_app(app)
     redis_store = StrictRedis(host=config[config_name].REDIS_HOST, port=config[config_name].REDIS_PORT)
     CSRFProtect(app)
     Session(app)
