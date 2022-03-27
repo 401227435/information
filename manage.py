@@ -5,38 +5,31 @@
 @File    : manage.py
  '''
 
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-import redis
+from flask_script import Manager, Server
+from flask_migrate import Migrate, MigrateCommand
+from info import create_app, db
+
 """
 1、初始化
 2、抽取配置文件在config类
-3、
+3、数据库
+4、redis
+5、添加csrf
+6、添加session存储在redis中
+7、添加命令行管理manage
+8、数据库迁移
+9、拆分Config
+10、加载内容
+11、把路由变成蓝图
+12、添加日志
 """
 
-app = Flask(__name__)
+app = create_app("dev")
 
-
-class Config(object):
-    DEBUG = True
-    # mysql 配置信息
-    SQLALCHEMY_DATABASE_URI = "mysql://root:123456@192.168.3.23:3306/information"
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-
-    # redis 配置信息
-    REDIS_HOST = "192.168.3.23"
-    REDIS_PORT = 6379
-
-
-app.config.from_object(Config)
-db = SQLAlchemy(app)
-redis_store = redis.StrictRedis(host=Config.REDIS_HOST, port=Config.REDIS_PORT)
-
-
-@app.route("/")
-def index():
-    return "test"
-
+manager = Manager(app)
+manager.add_command('runserver', Server(host='0.0.0.0', port=8080))
+Migrate(app, db)
+manager.add_command('db', MigrateCommand)
 
 if __name__ == '__main__':
-    app.run(host="192.168.3.109")
+    manager.run()
